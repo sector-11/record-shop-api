@@ -6,11 +6,7 @@ import jakarta.persistence.*;
 @Table(name = "album")
 public class Album {
     @Id
-    @SequenceGenerator(name="album_id_seq",
-            sequenceName="album_id_seq",
-            allocationSize=1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,
-            generator="album_id_seq")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     long id;
 
