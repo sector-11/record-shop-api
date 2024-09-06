@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -24,8 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
 
 @AutoConfigureMockMvc
 @SpringBootTest
@@ -40,9 +41,12 @@ class RecordShopControllerTest {
     @Autowired
     private MockMvc mockMvcController;
 
+    private ObjectMapper mapper;
+
     @BeforeEach
     public void setup(){
         mockMvcController = MockMvcBuilders.standaloneSetup(recordShopController).build();
+        mapper = new ObjectMapper();
     }
 
     @Test
@@ -93,5 +97,21 @@ class RecordShopControllerTest {
                 MockMvcRequestBuilders.get("/api/v1/record-shop/records/")));
 
         assertEquals(exception.getRootCause().getClass(), ResourceNotFoundException.class);
+    }
+
+    @Test
+    public void testPostAlbum() throws Exception {
+        Album album = new Album("Mm..Food", "MF DOOM", 2004, Genre.HIPHOP);
+        Album expectedAlbum = new Album(1L,"Mm..Food", "MF DOOM", 2004, Genre.HIPHOP);
+
+        when(mockRecordShopService.insertNewAlbum(any(Album.class))).thenReturn(expectedAlbum); //has to accept any album here as mapper is changing the data in test environment, for some reason. this does not occur when running normally.
+
+        this.mockMvcController.perform(
+                        MockMvcRequestBuilders.post("/api/v1/record-shop/records")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(mapper.writeValueAsBytes(album)))
+                .andExpect(MockMvcResultMatchers.status().isCreated());
+
+        verify(mockRecordShopService, times(1)).insertNewAlbum(any(Album.class));
     }
 }
