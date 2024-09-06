@@ -5,11 +5,9 @@ import com.northcoders.recordshop.model.Album;
 import com.northcoders.recordshop.service.RecordShopService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -22,6 +20,14 @@ public class RecordShopController {
     public ResponseEntity<List<Album>> getAllAlbums(){
         List<Album> albumList = recordShopService.getAllAlbums();
         return ResponseEntity.ok(albumList);
+    }
+
+    @PostMapping("/records")
+    public ResponseEntity<Album> postAlbum(@RequestBody Album album){
+        Album newAlbum = recordShopService.insertNewAlbum(album);
+        return ResponseEntity.created(
+                URI.create("/records/" + newAlbum.getId().toString()))
+                .body(newAlbum);
     }
 
     @GetMapping(value = {"/records/{id}", "/records/"})
