@@ -5,6 +5,7 @@ import com.northcoders.recordshop.exception.ResourceNotFoundException;
 import com.northcoders.recordshop.model.Album;
 import com.northcoders.recordshop.repository.RecordShopRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -37,5 +38,10 @@ public class RecordShopServiceImpl implements RecordShopService{
         if (album.getId() != null) throw new BadRequestException("You must not provide an id when posting new albums! The id will be set automatically by the database.");
 
         return recordShopRepository.save(album);
+    }
+
+    @Override
+    public ResponseEntity<Album> putAlbum(Album album) {
+        return null;
     }
 }
