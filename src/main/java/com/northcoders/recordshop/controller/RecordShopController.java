@@ -23,7 +23,7 @@ public class RecordShopController {
     }
 
     @PostMapping("/records")
-    public ResponseEntity<Album> postAlbum(@RequestBody Album album){
+    public ResponseEntity<Album> postAlbum(@RequestBody(required = false) Album album){
         Album newAlbum = recordShopService.insertNewAlbum(album);
         return ResponseEntity.created(
                 URI.create("/records/" + newAlbum.getId().toString()))
