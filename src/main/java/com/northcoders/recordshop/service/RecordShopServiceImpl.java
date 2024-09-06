@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RecordShopServiceImpl implements RecordShopService{
@@ -20,5 +21,12 @@ public class RecordShopServiceImpl implements RecordShopService{
         recordShopRepository.findAll().forEach(albumList::add);
         if (albumList.isEmpty()) throw new ResourceNotFoundException("There are no albums in the database!");
         return albumList;
+    }
+
+    @Override
+    public Album getAlbumById(long id) {
+        Optional<Album> album = recordShopRepository.findById(id);
+        if (album.isEmpty()) throw new ResourceNotFoundException("There is no album with id '" + id + "' in the database!");
+        return album.get();
     }
 }
