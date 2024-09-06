@@ -8,7 +8,7 @@ public class Album {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    long id;
+    Long id;
 
     @Column(name = "album_name", nullable = false)
     String albumName;
@@ -17,7 +17,7 @@ public class Album {
     String artist;
 
     @Column(name = "release_year", nullable = false)
-    int releaseYear;
+    Integer releaseYear;
 
     @Column(name = "genre_id", nullable = false)
     Genre genre;
@@ -40,7 +40,7 @@ public class Album {
         this.genre = genre;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -64,7 +64,7 @@ public class Album {
         this.artist = artist;
     }
 
-    public int getReleaseYear() {
+    public Integer getReleaseYear() {
         return releaseYear;
     }
 
