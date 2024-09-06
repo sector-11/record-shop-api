@@ -20,11 +20,6 @@ public class RecordShopController {
     @GetMapping("/records")
     public ResponseEntity<List<Album>> getAllAlbums(){
         List<Album> albumList = recordShopService.getAllAlbums();
-
-        if (albumList.isEmpty()){
-            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-        } else {
-            return ResponseEntity.ok(albumList);
-        }
+        return ResponseEntity.ok(albumList);
     }
 }

@@ -67,13 +67,4 @@ class RecordShopControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$[3].id").value(4L))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[3].genre").value("Pop"));
     }
-
-    @Test
-    public void testGetAllAlbumsReturnsNoContentWithNoAlbums() throws Exception {
-        when(mockRecordShopService.getAllAlbums()).thenReturn(new ArrayList<Album>());
-
-        this.mockMvcController.perform(
-                MockMvcRequestBuilders.get("/api/v1/record-shop/records"))
-                .andExpect(MockMvcResultMatchers.status().isNoContent());
-    }
 }
