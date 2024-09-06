@@ -1,5 +1,6 @@
 package com.northcoders.recordshop.service;
 
+import com.northcoders.recordshop.exception.ResourceNotFoundException;
 import com.northcoders.recordshop.model.Album;
 import com.northcoders.recordshop.repository.RecordShopRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ public class RecordShopServiceImpl implements RecordShopService{
     public List<Album> getAllAlbums() {
         List<Album> albumList = new ArrayList<>();
         recordShopRepository.findAll().forEach(albumList::add);
+        if (albumList.isEmpty()) throw new ResourceNotFoundException("There are no albums in the database!");
         return albumList;
     }
 }
