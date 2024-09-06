@@ -1,6 +1,7 @@
 package com.northcoders.recordshop.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.northcoders.recordshop.exception.ResourceNotFoundException;
 import com.northcoders.recordshop.model.Album;
 import com.northcoders.recordshop.model.Genre;
 import com.northcoders.recordshop.service.RecordShopService;
@@ -83,5 +84,11 @@ class RecordShopControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.artist").value("Red Green Cycle"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.releaseYear").value(2024))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.genre").value("Pop"));
+    }
+
+    @Test
+    public void testGetAlbumByIdNoParamThrowsException() throws Exception {
+        assertThrows(ResourceNotFoundException.class, () -> this.mockMvcController.perform(
+                MockMvcRequestBuilders.get("/api/v1/record-shop/records/")));
     }
 }
