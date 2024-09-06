@@ -29,4 +29,9 @@ public class RecordShopServiceImpl implements RecordShopService{
         if (album.isEmpty()) throw new ResourceNotFoundException("There is no album with id '" + id + "' in the database!");
         return album.get();
     }
+
+    @Override
+    public Album insertNewAlbum(Album album) {
+        return null;
+    }
 }

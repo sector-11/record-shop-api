@@ -7,4 +7,5 @@ import java.util.List;
 public interface RecordShopService {
     List<Album> getAllAlbums();
     Album getAlbumById(long id);
+    Album insertNewAlbum(Album album);
 }
