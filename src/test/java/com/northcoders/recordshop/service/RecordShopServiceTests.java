@@ -1,5 +1,6 @@
 package com.northcoders.recordshop.service;
 
+import com.northcoders.recordshop.exception.ResourceNotFoundException;
 import com.northcoders.recordshop.model.Album;
 import com.northcoders.recordshop.model.Genre;
 import com.northcoders.recordshop.repository.RecordShopRepository;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -22,6 +24,8 @@ class RecordShopServiceTests {
 
     @InjectMocks
     RecordShopServiceImpl recordShopService;
+
+
 
     @Test
     void TestGetAllAlbums() {
@@ -41,5 +45,14 @@ class RecordShopServiceTests {
         //Assert
         assertThat(result).hasSize(4);
         assertThat(result).isEqualTo(albumList);
+    }
+
+    @Test
+    void TestGetAllAlbumsWhileThereAreNone() {
+        List<Album> emptyAlbumList = new ArrayList<>();
+
+        when(mockRecordShopRepository.findAll()).thenReturn(emptyAlbumList);
+
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> recordShopService.getAllAlbums());
     }
 }
