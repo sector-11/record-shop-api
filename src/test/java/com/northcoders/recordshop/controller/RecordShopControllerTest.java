@@ -5,6 +5,7 @@ import com.northcoders.recordshop.model.Album;
 import com.northcoders.recordshop.model.Genre;
 import com.northcoders.recordshop.service.RecordShopService;
 import com.northcoders.recordshop.service.RecordShopServiceImpl;
+import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -66,5 +67,21 @@ class RecordShopControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$[2].releaseYear").value(2004))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[3].id").value(4L))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[3].genre").value("Pop"));
+    }
+
+    @Test
+    public void testGetAlbumByIdReturnsAlbum() throws Exception {
+        Album album = new Album(1L, "Testing", "Red Green Cycle", 2024, Genre.POP);
+
+        when(mockRecordShopService.getAlbumById(1L)).thenReturn(album);
+
+        this.mockMvcController.perform(
+                MockMvcRequestBuilders.get("/api/v1/record-shop/records/1"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(1L))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].albumName").value("Testing"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].artist").value("Red Green Cycle"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].releaseYear").value(2024))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].genre").value("Pop"));
     }
 }
