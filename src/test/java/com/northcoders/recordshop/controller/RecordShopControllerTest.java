@@ -78,10 +78,10 @@ class RecordShopControllerTest {
         this.mockMvcController.perform(
                 MockMvcRequestBuilders.get("/api/v1/record-shop/records/1"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(1L))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].albumName").value("Testing"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].artist").value("Red Green Cycle"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].releaseYear").value(2024))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].genre").value("Pop"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1L))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.albumName").value("Testing"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.artist").value("Red Green Cycle"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.releaseYear").value(2024))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.genre").value("Pop"));
     }
 }
