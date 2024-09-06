@@ -1,5 +1,6 @@
 package com.northcoders.recordshop.service;
 
+import com.northcoders.recordshop.exception.BadRequestException;
 import com.northcoders.recordshop.exception.ResourceNotFoundException;
 import com.northcoders.recordshop.model.Album;
 import com.northcoders.recordshop.repository.RecordShopRepository;
@@ -32,6 +33,9 @@ public class RecordShopServiceImpl implements RecordShopService{
 
     @Override
     public Album insertNewAlbum(Album album) {
-        return null;
+        if (album == null || album.getAlbumName() == null || album.getArtist() == null || album.getGenre() == null || album.getReleaseYear() == null) throw new BadRequestException("You must provide an album with all fields except id filled!");
+        if (album.getId() != null) throw new BadRequestException("You must not provide an id when posting new albums! The id will be set automatically by the database.");
+
+        return recordShopRepository.save(album);
     }
 }
