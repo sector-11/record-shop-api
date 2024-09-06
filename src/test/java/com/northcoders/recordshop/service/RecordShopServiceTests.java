@@ -4,6 +4,7 @@ import com.northcoders.recordshop.exception.ResourceNotFoundException;
 import com.northcoders.recordshop.model.Album;
 import com.northcoders.recordshop.model.Genre;
 import com.northcoders.recordshop.repository.RecordShopRepository;
+import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -11,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -54,5 +56,23 @@ class RecordShopServiceTests {
         when(mockRecordShopRepository.findAll()).thenReturn(emptyAlbumList);
 
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> recordShopService.getAllAlbums());
+    }
+
+    @Test
+    void testGetAlbumByIdFound() {
+        Album album = new Album(1L, "Testing", "Red Green Cycle", 2024, Genre.POP);
+
+        when(mockRecordShopRepository.findById(1L)).thenReturn(Optional.of(album));
+
+        Album result = recordShopService.getAlbumById(1L);
+
+        assertThat(result).isEqualTo(album);
+    }
+
+    @Test
+    void testGetAlbumByIdNotFound() {
+        when(mockRecordShopRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> recordShopService.getAlbumById(1L));
     }
 }
