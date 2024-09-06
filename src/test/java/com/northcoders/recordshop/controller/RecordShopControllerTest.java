@@ -6,6 +6,7 @@ import com.northcoders.recordshop.model.Album;
 import com.northcoders.recordshop.model.Genre;
 import com.northcoders.recordshop.service.RecordShopService;
 import com.northcoders.recordshop.service.RecordShopServiceImpl;
+import jakarta.servlet.ServletException;
 import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -88,7 +89,9 @@ class RecordShopControllerTest {
 
     @Test
     public void testGetAlbumByIdNoParamThrowsException() throws Exception {
-        assertThrows(ResourceNotFoundException.class, () -> this.mockMvcController.perform(
+        ServletException exception = assertThrows(ServletException.class, () -> this.mockMvcController.perform(
                 MockMvcRequestBuilders.get("/api/v1/record-shop/records/")));
+
+        assertEquals(exception.getRootCause().getClass(), ResourceNotFoundException.class);
     }
 }
