@@ -1,10 +1,10 @@
 package com.northcoders.recordshop.service;
 
+import com.northcoders.recordshop.exception.BadRequestException;
 import com.northcoders.recordshop.exception.ResourceNotFoundException;
 import com.northcoders.recordshop.model.Album;
 import com.northcoders.recordshop.model.Genre;
 import com.northcoders.recordshop.repository.RecordShopRepository;
-import org.apache.coyote.BadRequestException;
 import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
