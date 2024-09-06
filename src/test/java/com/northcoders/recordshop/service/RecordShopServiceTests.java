@@ -4,6 +4,7 @@ import com.northcoders.recordshop.exception.ResourceNotFoundException;
 import com.northcoders.recordshop.model.Album;
 import com.northcoders.recordshop.model.Genre;
 import com.northcoders.recordshop.repository.RecordShopRepository;
+import org.apache.coyote.BadRequestException;
 import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -74,5 +75,24 @@ class RecordShopServiceTests {
         when(mockRecordShopRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> recordShopService.getAlbumById(1L));
+    }
+
+    @Test
+    void testInsertNewAlbumWithGoodInput() {
+        Album album = new Album("Testing", "Red Green Cycle", 2024, Genre.POP);
+        Album expectedAlbum = new Album(1L, "Testing", "Red Green Cycle", 2024, Genre.POP);
+
+        when(mockRecordShopRepository.save(album)).thenReturn(expectedAlbum);
+
+        Album result = recordShopService.insertNewAlbum(album);
+
+        assertThat(result).isEqualTo(expectedAlbum);
+    }
+
+    @Test
+    void testInsertNewAlbumWithBadInput() {
+        Album badAlbum = new Album(1L, "Nostalgia Critic's The Wall", "Doug Walker", 2019, Genre.ROCK);
+        assertThrows(BadRequestException.class, () -> recordShopService.insertNewAlbum(badAlbum));
+        assertThrows(BadRequestException.class, () -> recordShopService.insertNewAlbum(null));
     }
 }
