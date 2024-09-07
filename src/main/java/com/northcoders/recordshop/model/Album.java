@@ -100,4 +100,8 @@ public class Album {
     public int hashCode() {
         return Objects.hash(id, albumName, artist, releaseYear, genre);
     }
+
+    public boolean anyFieldOtherThanIdAIsNull() {
+        return this.albumName == null || this.artist == null || this.genre == null || this.releaseYear == null;
+    }
 }

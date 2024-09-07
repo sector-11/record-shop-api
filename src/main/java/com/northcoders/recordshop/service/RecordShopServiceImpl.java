@@ -36,7 +36,7 @@ public class RecordShopServiceImpl implements RecordShopService{
 
     @Override
     public Album insertNewAlbum(Album album) {
-        if (album == null || album.getAlbumName() == null || album.getArtist() == null || album.getGenre() == null || album.getReleaseYear() == null) throw new BadRequestException("You must provide an album with all fields except id filled!");
+        if (album == null || album.anyFieldOtherThanIdAIsNull()) throw new BadRequestException("You must provide an album with all fields except id filled!");
         if (album.getId() != null) throw new BadRequestException("You must not provide an id when posting new albums! The id will be set automatically by the database.");
 
         return recordShopRepository.save(album);
@@ -47,7 +47,7 @@ public class RecordShopServiceImpl implements RecordShopService{
         if (album == null) throw new BadRequestException("You must provide an album when making this request!");
 
         if (id == null){
-            if (album.getAlbumName() == null || album.getArtist() == null || album.getGenre() == null || album.getReleaseYear() == null) throw new BadRequestException("You must provide an album with all fields except id filled when making a PUT request without an id specified on the endpoint!");
+            if (album.anyFieldOtherThanIdAIsNull()) throw new BadRequestException("You must provide an album with all fields except id filled when making a PUT request without an id specified on the endpoint!");
             if (album.getId() != null) throw new BadRequestException("You must not provide an id in the album when making a PUT request without an id specified on the endpoint! The id will be set automatically by the database.");
 
             Album createdAlbum = recordShopRepository.save(album);
