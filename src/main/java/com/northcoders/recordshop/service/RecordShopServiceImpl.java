@@ -70,4 +70,9 @@ public class RecordShopServiceImpl implements RecordShopService{
             return ResponseEntity.ok(albumToReturn);
         }
     }
+
+    @Override
+    public boolean deleteAlbum(long id) {
+        return false;
+    }
 }
