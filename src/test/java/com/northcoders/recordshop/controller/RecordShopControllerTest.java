@@ -9,6 +9,7 @@ import com.northcoders.recordshop.service.RecordShopServiceImpl;
 import jakarta.servlet.ServletException;
 import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -50,6 +51,7 @@ class RecordShopControllerTest {
     }
 
     @Test
+    @DisplayName("GET request to /records endpoint gives OK status and an expected list of albums assuming valid service layer")
     public void testGetAllAlbumsReturnsAllAlbums() throws Exception {
         //Test data
         List<Album> albumList = new ArrayList<>();
@@ -76,6 +78,7 @@ class RecordShopControllerTest {
     }
 
     @Test
+    @DisplayName("GET request to /records/ endpoint with a valid id gives OK response and a single expected album assuming valid service layer")
     public void testGetAlbumByIdReturnsAlbum() throws Exception {
         Album album = new Album(1L, "Testing", "Red Green Cycle", 2024, Genre.POP);
 
@@ -92,6 +95,7 @@ class RecordShopControllerTest {
     }
 
     @Test
+    @DisplayName("GET request to /records/ endpoint without id throws ResourceNotFoundException")
     public void testGetAlbumByIdNoParamThrowsException() throws Exception {
         ServletException exception = assertThrows(ServletException.class, () -> this.mockMvcController.perform(
                 MockMvcRequestBuilders.get("/api/v1/record-shop/records/")));
@@ -100,6 +104,7 @@ class RecordShopControllerTest {
     }
 
     @Test
+    @DisplayName("POST request to /records endpoint gives CREATED status assuming valid service layer")
     public void testPostAlbum() throws Exception {
         Album album = new Album("Mm..Food", "MF DOOM", 2004, Genre.HIPHOP);
         Album expectedAlbum = new Album(1L,"Mm..Food", "MF DOOM", 2004, Genre.HIPHOP);

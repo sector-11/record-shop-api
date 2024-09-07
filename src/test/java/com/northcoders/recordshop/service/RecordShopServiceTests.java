@@ -32,8 +32,8 @@ class RecordShopServiceTests {
     RecordShopServiceImpl recordShopService;
 
 
-
     @Test
+    @DisplayName("findAll with items in db returns the expected list of items")
     void TestGetAllAlbums() {
         //Test data
         List<Album> albumList = new ArrayList<>();
@@ -54,6 +54,7 @@ class RecordShopServiceTests {
     }
 
     @Test
+    @DisplayName("findAll empty db throws ResourceNotFoundException")
     void TestGetAllAlbumsWhileThereAreNone() {
         List<Album> emptyAlbumList = new ArrayList<>();
 
@@ -63,6 +64,7 @@ class RecordShopServiceTests {
     }
 
     @Test
+    @DisplayName("findById with good id returns an album")
     void testGetAlbumByIdFound() {
         Album album = new Album(1L, "Testing", "Red Green Cycle", 2024, Genre.POP);
 
@@ -74,6 +76,7 @@ class RecordShopServiceTests {
     }
 
     @Test
+    @DisplayName("findById with id that doesn't match db entry throws ResourceNotFoundException")
     void testGetAlbumByIdNotFound() {
         when(mockRecordShopRepository.findById(1L)).thenReturn(Optional.empty());
 
@@ -81,6 +84,7 @@ class RecordShopServiceTests {
     }
 
     @Test
+    @DisplayName("insertNewAlbum with correctly formatted albums returns album with id given by db")
     void testInsertNewAlbumWithGoodInput() {
         Album album = new Album("Testing", "Red Green Cycle", 2024, Genre.POP);
         Album expectedAlbum = new Album(1L, "Testing", "Red Green Cycle", 2024, Genre.POP);
@@ -93,6 +97,7 @@ class RecordShopServiceTests {
     }
 
     @Test
+    @DisplayName("insertNewAlbum with badly formatted albums throws BadRequestException")
     void testInsertNewAlbumWithBadInput() {
         Album badAlbum = new Album(1L, "Nostalgia Critic's The Wall", "Doug Walker", 2019, Genre.ROCK);
         assertThrows(BadRequestException.class, () -> recordShopService.insertNewAlbum(badAlbum));
