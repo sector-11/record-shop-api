@@ -115,6 +115,7 @@ class RecordShopServiceTests {
 
         when(mockRecordShopRepository.existsById(id)).thenReturn(true);
         when(mockRecordShopRepository.findById(id)).thenReturn(Optional.of(albumFromRepo));
+        when(mockRecordShopRepository.save(expectedAlbum)).thenReturn(expectedAlbum);
 
         ResponseEntity<Album> result = recordShopService.putAlbum(albumToGive, id);
 
