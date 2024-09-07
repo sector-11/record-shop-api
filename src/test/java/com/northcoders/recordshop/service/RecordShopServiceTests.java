@@ -6,10 +6,13 @@ import com.northcoders.recordshop.model.Album;
 import com.northcoders.recordshop.model.Genre;
 import com.northcoders.recordshop.repository.RecordShopRepository;
 import org.checkerframework.checker.units.qual.A;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,5 +97,70 @@ class RecordShopServiceTests {
         Album badAlbum = new Album(1L, "Nostalgia Critic's The Wall", "Doug Walker", 2019, Genre.ROCK);
         assertThrows(BadRequestException.class, () -> recordShopService.insertNewAlbum(badAlbum));
         assertThrows(BadRequestException.class, () -> recordShopService.insertNewAlbum(null));
+    }
+
+    @Test
+    @DisplayName("putAlbum returns the correctly changed album object with an OK status when given a valid id and body for an item in the db")
+    void testPutAlbumValidIdValidBodyAndExistsInDB() {
+        long id = 1L;
+        Album albumToGive = new Album(null, "Stiff Little Fingers", 1979, Genre.ROCK);
+        Album albumFromRepo = new Album(1L,"Inflammable Material", "Flexible Large Toes", 11979, Genre.JAZZ);
+        Album expectedAlbum = new Album(1L,"Inflammable Material", "Stiff Little Fingers", 1979, Genre.ROCK);
+        ResponseEntity<Album> expectedResult = new ResponseEntity<>(expectedAlbum, HttpStatus.OK);
+
+        when(mockRecordShopRepository.existsById(id)).thenReturn(true);
+        when(mockRecordShopRepository.findById(id)).thenReturn(Optional.of(albumFromRepo));
+
+        ResponseEntity<Album> result = recordShopService.putAlbum(albumToGive, id);
+
+        assertThat(result).isEqualTo(expectedResult);
+    }
+
+    @Test
+    @DisplayName("putAlbum throws a BadRequestException when given a valid id for an item that is not the db")
+    void testPutAlbumValidIdValidBodyButDoesNotExistInDB() {
+        long id = 1L;
+        Album albumToGive = new Album("Inflammable Material", "Stiff Little Fingers", 1979, Genre.ROCK);
+
+        when(mockRecordShopRepository.existsById(id)).thenReturn(false);
+
+        assertThrows(BadRequestException.class,() -> recordShopService.putAlbum(albumToGive, id));
+    }
+
+    @Test
+    @DisplayName("putAlbum throws a BadRequestException when given a valid id for an item in the db but has an invalid body")
+    void testPutAlbumValidIdInvalidBodyAndExistsInDB() {
+        long id = 1L;
+        Album albumToGive = null;
+
+        when(mockRecordShopRepository.existsById(id)).thenReturn(true);
+
+        assertThrows(BadRequestException.class,() -> recordShopService.putAlbum(albumToGive, id));
+    }
+
+    @Test
+    @DisplayName("putAlbum returns the correctly changed album object and a created status when given a valid body but the given id does not exist in the db")
+    void testPutAlbumNoIdValidBody() {
+        long id = 1L;
+        Album albumToGive = new Album("Inflammable Material", "Stiff Little Fingers", 1979, Genre.ROCK);
+        Album expectedAlbum = new Album(1L,"Inflammable Material", "Stiff Little Fingers", 1979, Genre.ROCK);
+        ResponseEntity<Album> expectedResult = new ResponseEntity<>(expectedAlbum, HttpStatus.CREATED);
+
+        when(mockRecordShopRepository.existsById(id)).thenReturn(false);
+
+        ResponseEntity<Album> result = recordShopService.putAlbum(albumToGive, id);
+
+        assertThat(result).isEqualTo(expectedResult);
+    }
+
+    @Test
+    @DisplayName("putAlbum throws a BadRequestException when given both an invalid id and body")
+    void testPutAlbumNoIdInvalidBody() {
+        Long id = null;
+        Album albumToGive = null;
+
+        when(mockRecordShopRepository.existsById(id)).thenReturn(false);
+
+        assertThrows(BadRequestException.class,() -> recordShopService.putAlbum(albumToGive, id));
     }
 }
