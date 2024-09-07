@@ -1,5 +1,6 @@
 package com.northcoders.recordshop.controller;
 
+import com.northcoders.recordshop.exception.BadRequestException;
 import com.northcoders.recordshop.exception.ResourceNotFoundException;
 import com.northcoders.recordshop.model.Album;
 import com.northcoders.recordshop.service.RecordShopService;
@@ -45,5 +46,16 @@ public class RecordShopController {
             response = ResponseEntity.created(URI.create("/api/v1/record-shop/records/" + id)).body(response.getBody());
         }
         return response;
+    }
+
+    @DeleteMapping(value = {"/records/{id}", "/records/"})
+    public ResponseEntity<Album> deleteAlbum(@PathVariable(required = false, name = "id") Long id){
+        if (id == null) throw new BadRequestException("No id supplied! You must supply an id to delete for on this endpoint!");
+        boolean response = recordShopService.deleteAlbum(id);
+        if (response) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
