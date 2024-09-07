@@ -76,6 +76,10 @@ public class Album {
         return genre.toString();
     }
 
+    public Genre getGenreAsGenre() {
+        return this.genre;
+    }
+
     public void setGenre(Genre genre) {
         this.genre = genre;
     }
