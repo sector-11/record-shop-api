@@ -1,6 +1,7 @@
 package com.northcoders.recordshop.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.northcoders.recordshop.exception.BadRequestException;
 import com.northcoders.recordshop.exception.ResourceNotFoundException;
 import com.northcoders.recordshop.model.Album;
 import com.northcoders.recordshop.model.Genre;
@@ -156,5 +157,38 @@ class RecordShopControllerTest {
                                 .content(mapper.writeValueAsBytes(album)))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1L));
+    }
+
+    @Test
+    @DisplayName("DELETE request to /records/{id} gives NO CONTENT status assuming valid service layer and id if service layer returns true")
+    public void testDeleteAlbumValidId() throws Exception {
+        long id = 1L;
+
+        when(mockRecordShopService.deleteAlbum(id)).thenReturn(true);
+
+        this.mockMvcController.perform(
+                        MockMvcRequestBuilders.delete("/api/v1/record-shop/records/" + id))
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+    }
+
+    @Test
+    @DisplayName("DELETE request to /records/{id} gives NOT FOUND status assuming valid service layer and id if service layer returns false")
+    public void testDeleteAlbumValidIdNotInDb() throws Exception {
+        long id = 1L;
+
+        when(mockRecordShopService.deleteAlbum(id)).thenReturn(false);
+
+        this.mockMvcController.perform(
+                        MockMvcRequestBuilders.delete("/api/v1/record-shop/records/" + id))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("DELETE request to /records/ throws BadRequestException when not given id")
+    public void testDeleteAlbumInvalidId() throws Exception {
+        ServletException exception = assertThrows(ServletException.class, () -> this.mockMvcController.perform(
+                MockMvcRequestBuilders.delete("/api/v1/record-shop/records/")));
+
+        assertEquals(exception.getRootCause().getClass(), BadRequestException.class);
     }
 }
