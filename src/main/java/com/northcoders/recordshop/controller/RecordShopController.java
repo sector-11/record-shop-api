@@ -4,6 +4,7 @@ import com.northcoders.recordshop.exception.ResourceNotFoundException;
 import com.northcoders.recordshop.model.Album;
 import com.northcoders.recordshop.service.RecordShopService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,5 +36,14 @@ public class RecordShopController {
         if (id == null) throw new ResourceNotFoundException("No id supplied! You must supply an id to search for on this endpoint!");
         Album album = recordShopService.getAlbumById(id);
         return ResponseEntity.ok(album);
+    }
+
+    @PutMapping(value = {"/records/{id}", "/records/"})
+    public ResponseEntity<Album> putAlbum(@PathVariable(required = false, name = "id") Long id, @RequestBody(required = false) Album album){
+        ResponseEntity<Album> response = recordShopService.putAlbum(album, id);
+        if (response.getStatusCode().equals(HttpStatus.CREATED)) {
+            response = ResponseEntity.created(URI.create("/api/v1/record-shop/records/" + id)).body(response.getBody());
+        }
+        return response;
     }
 }
