@@ -180,4 +180,16 @@ class RecordShopServiceTests {
 
         assertThrows(BadRequestException.class,() -> recordShopService.putAlbum(albumToGive, id));
     }
+
+
+    @Test
+    @DisplayName("putAlbum throws BadRequestException when given a valid id, which exists in the db, and body but the id given and the id in the body mismatch")
+    void testPutAlbumValidIdValidBodyButMismatch() {
+        long id = 1L;
+        Album albumToGive = new Album(2L, "Inflammable Material", "Stiff Little Fingers", 1979, Genre.ROCK);
+
+        when(mockRecordShopRepository.existsById(id)).thenReturn(true);
+
+        assertThrows(BadRequestException.class, () -> recordShopService.putAlbum(albumToGive, id));
+    }
 }
