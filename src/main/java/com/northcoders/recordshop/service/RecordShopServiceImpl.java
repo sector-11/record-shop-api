@@ -73,6 +73,11 @@ public class RecordShopServiceImpl implements RecordShopService{
 
     @Override
     public boolean deleteAlbum(long id) {
-        return false;
+        if (recordShopRepository.existsById(id)) {
+            recordShopRepository.deleteById(id);
+            return true;
+        } else {
+            throw new ResourceNotFoundException("No album found at id '" + id + "' in database.");
+        }
     }
 }
