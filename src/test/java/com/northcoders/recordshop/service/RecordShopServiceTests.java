@@ -19,6 +19,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -190,5 +191,27 @@ class RecordShopServiceTests {
         when(mockRecordShopRepository.existsById(id)).thenReturn(true);
 
         assertThrows(BadRequestException.class, () -> recordShopService.putAlbum(albumToGive, id));
+    }
+
+    @Test
+    @DisplayName("deleteAlbum returns true when given a valid id that exists in the db")
+    void testDeleteAlbumValidIdInDb() {
+        long id = 1L;
+
+        when(mockRecordShopRepository.existsById(id)).thenReturn(true);
+
+        boolean result = recordShopService.deleteAlbum(id);
+
+        assertTrue(result);
+    }
+
+    @Test
+    @DisplayName("deleteAlbum throws ResourceNotFoundException when given a valid id that doesn't exist in the db")
+    void testDeleteAlbumValidIdNotInDb() {
+        long id = 1L;
+
+        when(mockRecordShopRepository.existsById(id)).thenReturn(false);
+
+        assertThrows(ResourceNotFoundException.class, () -> recordShopService.deleteAlbum(id));
     }
 }
