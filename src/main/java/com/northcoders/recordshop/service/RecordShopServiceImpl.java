@@ -3,8 +3,10 @@ package com.northcoders.recordshop.service;
 import com.northcoders.recordshop.exception.BadRequestException;
 import com.northcoders.recordshop.exception.ResourceNotFoundException;
 import com.northcoders.recordshop.model.Album;
+import com.northcoders.recordshop.model.Genre;
 import com.northcoders.recordshop.repository.RecordShopRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -42,6 +44,31 @@ public class RecordShopServiceImpl implements RecordShopService{
 
     @Override
     public ResponseEntity<Album> putAlbum(Album album, Long id) {
-        return null;
+        if (album == null) throw new BadRequestException("You must provide an album when making this request!");
+
+        if (id == null){
+            if (album.getAlbumName() == null || album.getArtist() == null || album.getGenre() == null || album.getReleaseYear() == null) throw new BadRequestException("You must provide an album with all fields except id filled when making a PUT request without an id specified on the endpoint!");
+            if (album.getId() != null) throw new BadRequestException("You must not provide an id in the album when making a PUT request without an id specified on the endpoint! The id will be set automatically by the database.");
+
+            Album createdAlbum = recordShopRepository.save(album);
+            return new ResponseEntity<Album>(createdAlbum, HttpStatus.CREATED);
+        } else{
+            if (!recordShopRepository.existsById(id)) throw new BadRequestException("There is no album matching id '" + id + "' in the database.");
+
+            if (album.getId() != null){
+                if (!album.getId().equals(id)) throw new BadRequestException("When providing an id both in the body of your PUT request and on the endpoint, they must match! Yours were '" + album.getId() + "' in the body, and '" + id + "' on the endpoint.");
+            }
+
+            Album albumToModify = getAlbumById(id);
+
+            if (album.getAlbumName() != null) albumToModify.setAlbumName(album.getAlbumName());
+            if (album.getArtist() != null) albumToModify.setArtist(album.getArtist());
+            if (album.getGenre() != null) albumToModify.setGenre(album.getGenreAsGenre());
+            if (album.getReleaseYear() != null) albumToModify.setReleaseYear(album.getReleaseYear());
+
+            Album albumToReturn = recordShopRepository.save(albumToModify);
+
+            return ResponseEntity.ok(albumToReturn);
+        }
     }
 }
