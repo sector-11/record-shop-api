@@ -41,7 +41,7 @@ public class RecordShopServiceImpl implements RecordShopService{
     }
 
     @Override
-    public ResponseEntity<Album> putAlbum(Album album) {
+    public ResponseEntity<Album> putAlbum(Album album, Long id) {
         return null;
     }
 }

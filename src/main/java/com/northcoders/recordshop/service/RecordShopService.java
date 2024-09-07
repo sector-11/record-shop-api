@@ -9,5 +9,5 @@ public interface RecordShopService {
     List<Album> getAllAlbums();
     Album getAlbumById(long id);
     Album insertNewAlbum(Album album);
-    ResponseEntity<Album> putAlbum(Album album);
+    ResponseEntity<Album> putAlbum(Album album, Long id);
 }
