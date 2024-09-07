@@ -2,6 +2,8 @@ package com.northcoders.recordshop.model;
 
 import jakarta.persistence.*;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "album")
 public class Album {
@@ -82,5 +84,18 @@ public class Album {
 
     public void setGenre(Genre genre) {
         this.genre = genre;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Album album = (Album) o;
+        return Objects.equals(id, album.id) && Objects.equals(albumName, album.albumName) && Objects.equals(artist, album.artist) && Objects.equals(releaseYear, album.releaseYear) && genre == album.genre;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, albumName, artist, releaseYear, genre);
     }
 }
