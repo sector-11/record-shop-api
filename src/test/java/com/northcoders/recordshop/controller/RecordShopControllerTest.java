@@ -17,11 +17,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -118,5 +120,43 @@ class RecordShopControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isCreated());
 
         verify(mockRecordShopService, times(1)).insertNewAlbum(any(Album.class));
+    }
+
+    @Test
+    @DisplayName("PUT request to /records/{id} gives OK status assuming valid service layer and input")
+    public void testPutAlbum() throws Exception {
+        long id = 1L;
+        Album album = new Album(0L,"Mm..Food", "MF DOOM", 2004, Genre.HIPHOP);
+        Album albumAfterMapping = new Album(0L,"Mm..Food", "MF DOOM", 2004, Genre.HIPHOP);
+        Album expectedAlbum = new Album(1L,"Mm..Food", "MF DOOM", 2004, Genre.HIPHOP);
+        ResponseEntity<Album> expectedResponse = ResponseEntity.ok(expectedAlbum);
+
+        when(mockRecordShopService.putAlbum(albumAfterMapping, id)).thenReturn(expectedResponse);
+
+        this.mockMvcController.perform(
+                        MockMvcRequestBuilders.put("/api/v1/record-shop/records/" + id)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(mapper.writeValueAsBytes(album)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1L));
+    }
+
+    @Test
+    @DisplayName("PUT request to /records/ gives CREATED status assuming valid service layer and input")
+    public void testPutAlbumNoID() throws Exception {
+        Long id = null;
+        Album album = new Album(0L,"Mm..Food", "MF DOOM", 2004, Genre.HIPHOP);
+        Album albumAfterMapping = new Album(0L,"Mm..Food", "MF DOOM", 2004, Genre.HIPHOP);
+        Album expectedAlbum = new Album(1L,"Mm..Food", "MF DOOM", 2004, Genre.HIPHOP);
+        ResponseEntity<Album> expectedResponse = ResponseEntity.created(URI.create("/api/v1/record-shop/records/1")).body(expectedAlbum);
+
+        when(mockRecordShopService.putAlbum(albumAfterMapping, id)).thenReturn(expectedResponse);
+
+        this.mockMvcController.perform(
+                        MockMvcRequestBuilders.put("/api/v1/record-shop/records/")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(mapper.writeValueAsBytes(album)))
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1L));
     }
 }
