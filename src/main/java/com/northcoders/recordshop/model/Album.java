@@ -1,5 +1,6 @@
 package com.northcoders.recordshop.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.Objects;
@@ -78,6 +79,7 @@ public class Album {
         return genre.toString();
     }
 
+    @JsonIgnore
     public Genre getGenreAsGenre() {
         return this.genre;
     }
