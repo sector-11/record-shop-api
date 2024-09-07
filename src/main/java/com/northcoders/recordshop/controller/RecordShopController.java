@@ -34,7 +34,7 @@ public class RecordShopController {
 
     @GetMapping(value = {"/records/{id}", "/records/"})
     public ResponseEntity<Album> getAlbumById(@PathVariable(required = false, name = "id") Long id){
-        if (id == null) throw new ResourceNotFoundException("No id supplied! You must supply an id to search for on this endpoint!");
+        if (id == null) throw new BadRequestException("No id supplied! You must supply an id to search for on this endpoint!");
         Album album = recordShopService.getAlbumById(id);
         return ResponseEntity.ok(album);
     }

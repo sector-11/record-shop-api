@@ -101,7 +101,7 @@ class RecordShopControllerTest {
         ServletException exception = assertThrows(ServletException.class, () -> this.mockMvcController.perform(
                 MockMvcRequestBuilders.get("/api/v1/record-shop/records/")));
 
-        assertEquals(exception.getRootCause().getClass(), ResourceNotFoundException.class);
+        assertEquals(exception.getRootCause().getClass(), BadRequestException.class);
     }
 
     @Test
