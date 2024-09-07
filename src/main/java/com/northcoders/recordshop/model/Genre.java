@@ -24,8 +24,4 @@ public enum Genre {
     public String toString() {
         return this.desc;
     }
-
-    public String get() {
-        return desc;
-    }
 }
