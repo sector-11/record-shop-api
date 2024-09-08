@@ -12,4 +12,5 @@ public interface RecordShopService {
     ResponseEntity<Album> putAlbum(Album album, Long id);
     boolean deleteAlbum (long id);
     List<Album> getAllAlbumsByArtist(String artist);
+    List<Album> getAllAlbumsByReleaseYear(Integer year);
 }

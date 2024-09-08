@@ -91,4 +91,9 @@ public class RecordShopServiceImpl implements RecordShopService{
 
         return resultList;
     }
+
+    @Override
+    public List<Album> getAllAlbumsByReleaseYear(Integer year) {
+        return null;
+    }
 }
