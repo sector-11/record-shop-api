@@ -64,7 +64,7 @@ public class RecordShopServiceImpl implements RecordShopService{
 
             if (album.getAlbumName() != null) albumToModify.setAlbumName(album.getAlbumName());
             if (album.getArtist() != null) albumToModify.setArtist(album.getArtist());
-            if (album.getGenre() != null) albumToModify.setGenre(album.getGenreAsGenre());
+            if (album.getGenreAsGenre() != null) albumToModify.setGenre(album.getGenreAsGenre());
             if (album.getReleaseYear() != null) albumToModify.setReleaseYear(album.getReleaseYear());
 
             Album albumToReturn = recordShopRepository.save(albumToModify);
