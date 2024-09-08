@@ -117,6 +117,12 @@ public class RecordShopServiceImpl implements RecordShopService{
 
     @Override
     public List<Album> getAllAlbumsByName(String albumName) {
-        return null;
+        if (albumName == null) throw new BadRequestException("An name must be provided when trying to find an album by its name!");
+
+        List<Album> resultList = recordShopRepository.findByAlbumName(albumName);
+
+        if (resultList.isEmpty()) throw new ResourceNotFoundException("No album found with name '" + albumName + "' in the database!");
+
+        return resultList;
     }
 }
