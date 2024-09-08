@@ -213,4 +213,26 @@ class RecordShopControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$[2].id").value(3L))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[2].releaseYear").value(2024));
     }
+
+    @Test
+    @DisplayName("GET request to /records with releaseYear parameter returns list of released that year assuming valid year integer with results in db")
+    public void testGetAlbumsByReleaseYear() throws Exception {
+        Integer year = 2024;
+        List<Album> albums = new ArrayList<>();
+        albums.add(new Album(1L, "The Test pt 1", "Test", 2024, Genre.POP));
+        albums.add(new Album(2L, "The Test pt 2", "Test", 2024, Genre.POP));
+        albums.add(new Album(3L, "The Test pt 3", "Test", 2024, Genre.POP));
+
+        when(mockRecordShopService.getAllAlbumsByReleaseYear(year)).thenReturn(albums);
+
+        this.mockMvcController.perform(
+                        MockMvcRequestBuilders.get("/api/v1/record-shop/records?releaseYear=" + year))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(1L))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].albumName").value("The Test pt 1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].id").value(2L))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].artist").value("Test"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[2].id").value(3L))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[2].releaseYear").value(2024));
+    }
 }
