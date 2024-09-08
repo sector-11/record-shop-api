@@ -317,4 +317,44 @@ class RecordShopServiceTests {
             assertThrows(BadRequestException.class, () -> recordShopService.getAllAlbumsByReleaseYear(year));
         }
     }
+
+
+    @Nested
+    @DisplayName("getAllAlbumsByGenre tests")
+    class GetAllAlbumsByGenre {
+        @Test
+        @DisplayName("getAllAlbumsByGenre returns correct list of albums when given valid genre of albums in db")
+        void testGetAllAlbumsByReleaseYearAndPresent() {
+            Genre genre = Genre.POP;
+            List<Album> albums = new ArrayList<>();
+            albums.add(new Album("The Test pt 1", "Test", 2024, Genre.POP));
+            albums.add(new Album("The Test pt 2", "Test", 2024, Genre.POP));
+            albums.add(new Album("The Test pt 3", "Test", 2024, Genre.POP));
+
+            when(mockRecordShopRepository.findByGenre(genre)).thenReturn(albums);
+
+            List<Album> result = recordShopService.getAllAlbumsByGenre(genre);
+
+            assertThat(result).isEqualTo(albums);
+        }
+
+        @Test
+        @DisplayName("getAllAlbumsByGenre throws ResourceNotFoundException when given valid genre not matching db entry")
+        void testGetAllAlbumsByReleaseYearAndNotPresent() {
+            Genre genre = Genre.POP;
+            List<Album> noAlbums = new ArrayList<>();
+
+            when(mockRecordShopRepository.findByGenre(genre)).thenReturn(noAlbums);
+
+            assertThrows(ResourceNotFoundException.class, () -> recordShopService.getAllAlbumsByGenre(genre));
+        }
+
+        @Test
+        @DisplayName("getAllAlbumsByGenre throws BadRequestException when given invalid genre")
+        void testGetAllAlbumsByReleaseYearAndNullInteger() {
+            Genre genre = null;
+
+            assertThrows(BadRequestException.class, () -> recordShopService.getAllAlbumsByGenre(genre));
+        }
+    }
 }
