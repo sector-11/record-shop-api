@@ -214,4 +214,39 @@ class RecordShopServiceTests {
 
         assertThrows(ResourceNotFoundException.class, () -> recordShopService.deleteAlbum(id));
     }
+
+    @Test
+    @DisplayName("getAllAlbumsByArtist returns correct list of artists when given valid name of album in db")
+    void testGetAllAlbumsByArtistAndPresent() {
+        String artist = "Test";
+        List<Album> albums = new ArrayList<>();
+        albums.add(new Album("The Test pt 1", "Test", 2024, Genre.POP));
+        albums.add(new Album("The Test pt 2", "Test", 2024, Genre.POP));
+        albums.add(new Album("The Test pt 3", "Test", 2024, Genre.POP));
+
+        when(mockRecordShopRepository.findByArtist(artist)).thenReturn(albums);
+
+        List<Album> result = recordShopService.getAllAlbumsByArtist(artist);
+
+        assertThat(result).isEqualTo(albums);
+    }
+
+    @Test
+    @DisplayName("getAllAlbumsByArtist throws ResourceNotFoundException when given valid name not matching db")
+    void testGetAllAlbumsByArtistAndNotPresent() {
+        String artist = "Test";
+        List<Album> noAlbums = new ArrayList<>();
+
+        when(mockRecordShopRepository.findByArtist(artist)).thenReturn(noAlbums);
+
+        assertThrows(ResourceNotFoundException.class, () -> recordShopService.getAllAlbumsByArtist(artist));
+    }
+
+    @Test
+    @DisplayName("getAllAlbumsByArtist throws BadRequestException when given invalid name")
+    void testGetAllAlbumsByArtistAndNullString() {
+        String artist = null;
+
+        assertThrows(BadRequestException.class, () -> recordShopService.getAllAlbumsByArtist(artist));
+    }
 }
