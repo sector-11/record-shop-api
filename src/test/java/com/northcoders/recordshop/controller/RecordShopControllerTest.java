@@ -257,4 +257,13 @@ class RecordShopControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$[2].id").value(3L))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[2].releaseYear").value(2024));
     }
+
+    @Test
+    @DisplayName("GET request to /records with invalid genre parameter throws BadRequestException")
+    public void testGetAlbumsByGenreBadGenre() throws Exception {
+        ServletException exception = assertThrows(ServletException.class, () -> this.mockMvcController.perform(
+                MockMvcRequestBuilders.get("/api/v1/record-shop/records?genre=genrecore")));
+
+        assertEquals(exception.getRootCause().getClass(), BadRequestException.class);
+    }
 }
