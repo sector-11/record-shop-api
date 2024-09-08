@@ -104,4 +104,8 @@ public class Album {
     public boolean anyFieldOtherThanIdIsNull() {
         return this.albumName == null || this.artist == null || this.genre == null || this.releaseYear == null;
     }
+
+    public boolean allFieldsOtherThanIdAreNull() {
+        return this.albumName == null & this.artist == null & this.genre == null & this.releaseYear == null;
+    }
 }
