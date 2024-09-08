@@ -324,7 +324,7 @@ class RecordShopServiceTests {
     class GetAllAlbumsByGenre {
         @Test
         @DisplayName("getAllAlbumsByGenre returns correct list of albums when given valid genre of albums in db")
-        void testGetAllAlbumsByReleaseYearAndPresent() {
+        void testGetAllAlbumsByGenreAndPresent() {
             Genre genre = Genre.POP;
             List<Album> albums = new ArrayList<>();
             albums.add(new Album("The Test pt 1", "Test", 2024, Genre.POP));
@@ -339,8 +339,8 @@ class RecordShopServiceTests {
         }
 
         @Test
-        @DisplayName("getAllAlbumsByGenre throws ResourceNotFoundException when given valid genre not matching db entry")
-        void testGetAllAlbumsByReleaseYearAndNotPresent() {
+        @DisplayName("getAllAlbumsByGenre throws ResourceNotFoundException when given valid genre not matching any db entry")
+        void testGetAllAlbumsByGenreAndNotPresent() {
             Genre genre = Genre.POP;
             List<Album> noAlbums = new ArrayList<>();
 
@@ -351,7 +351,7 @@ class RecordShopServiceTests {
 
         @Test
         @DisplayName("getAllAlbumsByGenre throws BadRequestException when given invalid genre")
-        void testGetAllAlbumsByReleaseYearAndNullInteger() {
+        void testGetAllAlbumsByGenreAndNullGenre() {
             Genre genre = null;
 
             assertThrows(BadRequestException.class, () -> recordShopService.getAllAlbumsByGenre(genre));
