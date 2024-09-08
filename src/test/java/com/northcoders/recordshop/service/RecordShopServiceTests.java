@@ -14,9 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -393,6 +391,102 @@ class RecordShopServiceTests {
             String name = null;
 
             assertThrows(BadRequestException.class, () -> recordShopService.getAllAlbumsByName(name));
+        }
+    }
+
+
+    @Nested
+    @DisplayName("getAllAlbumsByMultipleParams tests")
+    class GetAllAlbumsByMultipleParamsTest {
+        @Test
+        @DisplayName("getAllAlbumsByMultipleParams can handle requests with all parameters")
+        void testGetAllAlbumsByMultipleParamsAllParams() {
+            List<Album> initialList = new ArrayList<>(); //List with expected result and then albums with one value changed each that should be removed
+                initialList.add(new Album(1L, "Test Album", "Test Name", 2024, Genre.POP));
+                initialList.add(new Album(2L, "Test Album", "Other Name", 2024, Genre.POP));
+                initialList.add(new Album(1L, "Other Album", "Test Name", 2024, Genre.POP));
+                initialList.add(new Album(1L, "Test Album", "Test Name", 4202, Genre.POP));
+                initialList.add(new Album(1L, "Test Album", "Test Name", 2024, Genre.ROCK));
+
+            List<Album> expectedList = new ArrayList<>();
+                expectedList.add(new Album(1L, "Test Album", "Test Name", 2024, Genre.POP));
+
+            Map<String, String> parameters = new HashMap<String, String>();
+                parameters.put("artist", "Test Name");
+                parameters.put("releaseYear", "2024");
+                parameters.put("genre", "Pop");
+                parameters.put("albumName", "Test Album");
+
+            when(mockRecordShopRepository.findByArtist("Test Name")).thenAnswer(answer -> {
+                initialList.remove(new Album(2L, "Test Album", "Other Name", 2024, Genre.POP));
+                return initialList;});
+            when(mockRecordShopRepository.findByReleaseYear(2024)).thenAnswer(answer -> {
+                initialList.remove(new Album(1L, "Test Album", "Test Name", 4202, Genre.POP));
+                return initialList;});
+            when(mockRecordShopRepository.findByGenre(Genre.POP)).thenAnswer(answer -> {
+                initialList.remove(new Album(1L, "Test Album", "Test Name", 2024, Genre.ROCK));
+                return initialList;});
+            when(mockRecordShopRepository.findByAlbumName("Test Album")).thenAnswer(answer -> {
+                initialList.remove(new Album(1L, "Other Album", "Test Name", 2024, Genre.POP));
+                return initialList;});
+
+            List<Album> result = recordShopService.getAllAlbumsByMultipleParams(parameters);
+
+            assertThat(result).isEqualTo(expectedList);
+        }
+
+        @Test
+        @DisplayName("getAllAlbumsByMultipleParams can handle requests with two parameters")
+        void testGetAllAlbumsByMultipleParamsSomeParams() {
+            List<Album> initialList = new ArrayList<>();
+                initialList.add(new Album(1L, "Test Album", "Test Name", 2024, Genre.POP));
+                initialList.add(new Album(2L, "Test Album", "Other Name", 2024, Genre.POP));
+                initialList.add(new Album(1L, "Other Album", "Test Name", 2024, Genre.POP));
+                initialList.add(new Album(1L, "Test Album", "Test Name", 4202, Genre.POP));
+                initialList.add(new Album(1L, "Test Album", "Test Name", 2024, Genre.ROCK));
+
+            List<Album> expectedList = new ArrayList<>();
+                expectedList.add(new Album(1L, "Test Album", "Test Name", 2024, Genre.POP));
+                expectedList.add(new Album(1L, "Test Album", "Test Name", 4202, Genre.POP));
+                expectedList.add(new Album(1L, "Test Album", "Test Name", 2024, Genre.ROCK));
+
+            Map<String, String> parameters = new HashMap<String, String>();
+                parameters.put("artist", "Test Name");
+                parameters.put("albumName", "Test Album");
+
+            when(mockRecordShopRepository.findByArtist("Test Name")).thenAnswer(answer -> {
+                initialList.remove(new Album(2L, "Test Album", "Other Name", 2024, Genre.POP));
+                return initialList;});
+            when(mockRecordShopRepository.findByAlbumName("Test Album")).thenAnswer(answer -> {
+                initialList.remove(new Album(1L, "Other Album", "Test Name", 2024, Genre.POP));
+                return initialList;});
+
+            List<Album> result = recordShopService.getAllAlbumsByMultipleParams(parameters);
+
+            assertThat(result).isEqualTo(expectedList);
+        }
+
+        @Test
+        @DisplayName("getAllAlbumsByMultipleParams throws BadRequestException when given bad args")
+        void testGetAllAlbumsByMultipleParamsBadParams() {
+            Map<String, String> parameters = new HashMap<String, String>();
+            parameters.put("test", "Test");
+            parameters.put("otherTest", "Test");
+
+            assertThrows(BadRequestException.class, () -> recordShopService.getAllAlbumsByMultipleParams(parameters));
+        }
+
+        @Test
+        @DisplayName("getAllAlbumsByMultipleParams throws ResourceNotFoundException when given args that have no results")
+        void testGetAllAlbumsByMultipleParamsNoResult() {
+            List<Album> emptyList = new ArrayList<>();
+
+            Map<String, String> parameters = new HashMap<String, String>();
+            parameters.put("artist", "Test Name");
+
+            when(mockRecordShopRepository.findByArtist("Test Name")).thenReturn(emptyList);
+
+            assertThrows(ResourceNotFoundException.class, () -> recordShopService.getAllAlbumsByMultipleParams(parameters));
         }
     }
 }
