@@ -19,8 +19,13 @@ public class RecordShopController {
     RecordShopService recordShopService;
 
     @GetMapping("/records")
-    public ResponseEntity<List<Album>> getAllAlbums(){
-        List<Album> albumList = recordShopService.getAllAlbums();
+    public ResponseEntity<List<Album>> getAllAlbums(@RequestParam(name = "artist", required = false) String artist){
+        List<Album> albumList;
+        if (artist != null) {
+            albumList = recordShopService.getAllAlbumsByArtist(artist);
+        } else {
+            albumList = recordShopService.getAllAlbums();
+        }
         return ResponseEntity.ok(albumList);
     }
 
