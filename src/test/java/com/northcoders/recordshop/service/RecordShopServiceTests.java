@@ -357,4 +357,42 @@ class RecordShopServiceTests {
             assertThrows(BadRequestException.class, () -> recordShopService.getAllAlbumsByGenre(genre));
         }
     }
+
+
+    @Nested
+    @DisplayName("getAllAlbumsByName tests")
+    class GetAllAlbumsByNameTest {
+        @Test
+        @DisplayName("getAllAlbumsByName returns correct list of albums when given valid name of an album in db")
+        void testGetAllAlbumsByNameAndPresent() {
+            String name = "The Test";
+            List<Album> albums = new ArrayList<>();
+            albums.add(new Album("The Test", "Test", 2024, Genre.POP));
+
+            when(mockRecordShopRepository.findByAlbumName(name)).thenReturn(albums);
+
+            List<Album> result = recordShopService.getAllAlbumsByName(name);
+
+            assertThat(result).isEqualTo(albums);
+        }
+
+        @Test
+        @DisplayName("getAllAlbumsByName throws ResourceNotFoundException when given valid name not matching any db entry")
+        void testGetAllAlbumsByNameAndNotPresent() {
+            String name = "The Test";
+            List<Album> noAlbums = new ArrayList<>();
+
+            when(mockRecordShopRepository.findByAlbumName(name)).thenReturn(noAlbums);
+
+            assertThrows(ResourceNotFoundException.class, () -> recordShopService.getAllAlbumsByName(name));
+        }
+
+        @Test
+        @DisplayName("getAllAlbumsByGenre throws BadRequestException when given invalid name")
+        void testGetAllAlbumsByNameAndNullString() {
+            String name = null;
+
+            assertThrows(BadRequestException.class, () -> recordShopService.getAllAlbumsByName(name));
+        }
+    }
 }
