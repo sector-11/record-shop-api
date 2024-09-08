@@ -129,6 +129,76 @@ public class RecordShopServiceImpl implements RecordShopService{
 
     @Override
     public List<Album> getAllAlbumsByMultipleParams(Map<String, String> params) {
-        return null;
+        StringBuilder badParamsBuilder = new StringBuilder();
+        int badParamsCount = 0;
+        for (String param : params.keySet()) {
+            if (!param.matches("artist|releaseYear|genre|albumName")) {
+                badParamsBuilder.append(param).append(", ");
+                badParamsCount++;
+            }
+        }
+
+        String badParams;
+        if (badParamsCount > 0) {
+            badParams = badParamsBuilder.delete(badParamsBuilder.length() - 1, badParamsBuilder.length()).toString();
+            if (badParamsCount == 1) throw new BadRequestException("Given parameter '" + badParams + "' is not valid on this endpoint!");
+            throw new BadRequestException("Given parameters '" + badParams + "' are not valid on this endpoint!");
+        }
+
+        boolean filterByArtist = false;
+        boolean filterByReleaseYear = false;
+        boolean filterByGenre = false;
+        boolean filterByAlbumName = false;
+
+        for (String param : params.keySet()) {
+            switch (param) {
+                case "artist" -> filterByArtist = true;
+                case "releaseYear" -> filterByReleaseYear = true;
+                case "genre" -> filterByGenre = true;
+                case "albumName" -> filterByAlbumName = true;
+                default -> throw new BadRequestException("Can't process given parameter '" + param + "'!");
+            }
+        }
+
+        List<Album> workingList;
+
+        try {
+            if (filterByAlbumName) {
+                workingList = getAllAlbumsByName(params.get("albumName"));
+                filterByAlbumName = false;
+            } else if (filterByArtist) {
+                workingList = getAllAlbumsByArtist(params.get("artist"));
+                filterByArtist = false;
+            } else if (filterByReleaseYear) {
+                workingList = getAllAlbumsByReleaseYear(Integer.valueOf(params.get("year")));
+                filterByReleaseYear = false;
+            } else if (filterByGenre) {
+                workingList = getAllAlbumsByGenre(Genre.valueOf(params.get("genre").toUpperCase()));
+                filterByGenre = false;
+            } else {
+                throw new BadRequestException("No parameters provided for search with parameters!");
+            }
+        } catch (BadRequestException e) {
+            throw new BadRequestException(e.getMessage());
+        } catch (ResourceNotFoundException e) {
+            throw new ResourceNotFoundException("No matches found in database for given filters.");
+        }
+
+        if (filterByArtist) {
+            String artist = params.get("artist");
+            workingList.removeIf(album -> !album.getArtist().equals(artist));
+        }
+        if (filterByReleaseYear) {
+            int releaseYear = Integer.parseInt(params.get("releaseYear"));
+            workingList.removeIf(album -> !album.getReleaseYear().equals(releaseYear));
+        }
+        if (filterByGenre) {
+            Genre genre = Genre.valueOf(params.get("genre").toUpperCase());
+            workingList.removeIf(album -> !album.getGenreAsGenre().equals(genre));
+        }
+
+        if (workingList.isEmpty()) throw new ResourceNotFoundException("No matches found in database for given filters.");
+
+        return workingList;
     }
 }
