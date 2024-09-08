@@ -266,4 +266,20 @@ class RecordShopControllerTest {
 
         assertEquals(exception.getRootCause().getClass(), BadRequestException.class);
     }
+
+    @Test
+    @DisplayName("GET request to /records with album name parameter returns list of albums with that name assuming valid name string with a result in db")
+    public void testGetAlbumsByAlbumName() throws Exception {
+        String name = "The Test";
+        List<Album> albums = new ArrayList<>();
+        albums.add(new Album(1L, "The Test", "Test", 2024, Genre.POP));
+
+        when(mockRecordShopService.getAllAlbumsByName(name)).thenReturn(albums);
+
+        this.mockMvcController.perform(
+                        MockMvcRequestBuilders.get("/api/v1/record-shop/records?albumName=" + name))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(1L))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].albumName").value("The Test"));
+    }
 }
