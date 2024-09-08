@@ -52,7 +52,7 @@ public class RecordShopServiceImpl implements RecordShopService{
             if (album.getId() != null) throw new BadRequestException("You must not provide an id in the album when making a PUT request without an id specified on the endpoint! The id will be set automatically by the database.");
 
             Album createdAlbum = recordShopRepository.save(album);
-            return new ResponseEntity<Album>(createdAlbum, HttpStatus.CREATED);
+            return new ResponseEntity<>(createdAlbum, HttpStatus.CREATED);
         } else{
             if (!recordShopRepository.existsById(id)) throw new BadRequestException("There is no album matching id '" + id + "' in the database.");
 
@@ -111,7 +111,7 @@ public class RecordShopServiceImpl implements RecordShopService{
 
         List<Album> resultList = recordShopRepository.findByGenre(genre);
 
-        if (resultList.isEmpty()) throw new ResourceNotFoundException("No albums found with genre '" + genre.toString() + "' in the database!");
+        if (resultList.isEmpty()) throw new ResourceNotFoundException("No albums found with genre '" + genre + "' in the database!");
 
         return resultList;
     }
@@ -129,21 +129,8 @@ public class RecordShopServiceImpl implements RecordShopService{
 
     @Override
     public List<Album> getAllAlbumsByMultipleParams(Map<String, String> params) {
-        StringBuilder badParamsBuilder = new StringBuilder();
-        int badParamsCount = 0;
-        for (String param : params.keySet()) {
-            if (!param.matches("artist|releaseYear|genre|albumName")) {
-                badParamsBuilder.append(param).append(", ");
-                badParamsCount++;
-            }
-        }
-
-        String badParams;
-        if (badParamsCount > 0) {
-            badParams = badParamsBuilder.delete(badParamsBuilder.length() - 1, badParamsBuilder.length()).toString();
-            if (badParamsCount == 1) throw new BadRequestException("Given parameter '" + badParams + "' is not valid on this endpoint!");
-            throw new BadRequestException("Given parameters '" + badParams + "' are not valid on this endpoint!");
-        }
+        checkForBadParams(params);
+        List<Album> workingList;
 
         boolean filterByArtist = false;
         boolean filterByReleaseYear = false;
@@ -160,12 +147,9 @@ public class RecordShopServiceImpl implements RecordShopService{
             }
         }
 
-        List<Album> workingList;
-
         try {
             if (filterByAlbumName) {
                 workingList = getAllAlbumsByName(params.get("albumName"));
-                filterByAlbumName = false;
             } else if (filterByArtist) {
                 workingList = getAllAlbumsByArtist(params.get("artist"));
                 filterByArtist = false;
@@ -200,5 +184,23 @@ public class RecordShopServiceImpl implements RecordShopService{
         if (workingList.isEmpty()) throw new ResourceNotFoundException("No matches found in database for given filters.");
 
         return workingList;
+    }
+
+    private void checkForBadParams(Map<String, String> params) {
+        StringBuilder badParamsBuilder = new StringBuilder();
+        int badParamsCount = 0;
+        for (String param : params.keySet()) {
+            if (!param.matches("artist|releaseYear|genre|albumName")) {
+                badParamsBuilder.append(param).append(", ");
+                badParamsCount++;
+            }
+        }
+
+        String badParams;
+        if (badParamsCount > 0) {
+            badParams = badParamsBuilder.delete(badParamsBuilder.length() - 1, badParamsBuilder.length()).toString();
+            if (badParamsCount == 1) throw new BadRequestException("Given parameter '" + badParams + "' is not valid on this endpoint!");
+            throw new BadRequestException("Given parameters '" + badParams + "' are not valid on this endpoint!");
+        }
     }
 }
