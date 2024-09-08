@@ -15,4 +15,5 @@ public interface RecordShopService {
     List<Album> getAllAlbumsByArtist(String artist);
     List<Album> getAllAlbumsByReleaseYear(Integer year);
     List<Album> getAllAlbumsByGenre (Genre genre);
+    List<Album> getAllAlbumsByName (String albumName);
 }

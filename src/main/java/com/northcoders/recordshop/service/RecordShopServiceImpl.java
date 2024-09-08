@@ -114,4 +114,9 @@ public class RecordShopServiceImpl implements RecordShopService{
 
         return resultList;
     }
+
+    @Override
+    public List<Album> getAllAlbumsByName(String albumName) {
+        return null;
+    }
 }
