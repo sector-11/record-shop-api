@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/record-shop")
@@ -20,30 +21,45 @@ public class RecordShopController {
     RecordShopService recordShopService;
 
     @GetMapping("/records")
-    public ResponseEntity<List<Album>> getAllAlbums(@RequestParam(name = "artist", required = false) String artist,
+    public ResponseEntity<List<Album>> getAllAlbums(@RequestParam Map<String, String> params,
+                                                    @RequestParam(name = "artist", required = false) String artist,
                                                     @RequestParam(name = "releaseYear", required = false) Integer year,
                                                     @RequestParam(name = "genre", required = false) String genreString,
                                                     @RequestParam(name = "albumName", required = false) String albumName) {
         List<Album> albumList;
-        if (artist != null) {
-            albumList = recordShopService.getAllAlbumsByArtist(artist);
-        } else if (year != null) {
-            albumList = recordShopService.getAllAlbumsByReleaseYear(year);
-        } else if (genreString != null) {
-            Genre genre;
+        Genre genre = null;
+
+        if (genreString != null) {
             try {
                 genre = Genre.valueOf(genreString.toUpperCase());
             } catch (IllegalArgumentException e) {
                 throw new BadRequestException("Provided argument '" + genreString + "' is not a valid genre!");
             }
+        }
 
+        switch (params.size()) {
+            case 0 -> albumList = recordShopService.getAllAlbums();
+            case 1 -> albumList = getAllAlbumsWithOneParam(params, artist, year, genre, albumName);
+            default -> albumList = recordShopService.getAllAlbumsByMultipleParams(params);
+        }
+        return ResponseEntity.ok(albumList);
+    }
+
+    public List<Album> getAllAlbumsWithOneParam(Map<String, String> param, String artist, Integer year, Genre genre, String albumName){
+        List<Album> albumList;
+        if (artist != null) {
+            albumList = recordShopService.getAllAlbumsByArtist(artist);
+        } else if (year != null) {
+            albumList = recordShopService.getAllAlbumsByReleaseYear(year);
+        } else if (genre != null) {
             albumList = recordShopService.getAllAlbumsByGenre(genre);
         } else if (albumName != null) {
             albumList = recordShopService.getAllAlbumsByName(albumName);
         } else {
-            albumList = recordShopService.getAllAlbums();
+            String givenParam = param.keySet().toString();
+            throw new BadRequestException("Given parameter '" + givenParam.substring(1, givenParam.length() - 1) + "' is not valid on this endpoint!");
         }
-        return ResponseEntity.ok(albumList);
+        return albumList;
     }
 
     @PostMapping("/records")
