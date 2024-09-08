@@ -3,6 +3,7 @@ package com.northcoders.recordshop.controller;
 import com.northcoders.recordshop.exception.BadRequestException;
 import com.northcoders.recordshop.exception.ResourceNotFoundException;
 import com.northcoders.recordshop.model.Album;
+import com.northcoders.recordshop.model.Genre;
 import com.northcoders.recordshop.service.RecordShopService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,12 +21,22 @@ public class RecordShopController {
 
     @GetMapping("/records")
     public ResponseEntity<List<Album>> getAllAlbums(@RequestParam(name = "artist", required = false) String artist,
-                                                    @RequestParam(name = "releaseYear", required = false) Integer year) {
+                                                    @RequestParam(name = "releaseYear", required = false) Integer year,
+                                                    @RequestParam(name = "genre", required = false) String genreString) {
         List<Album> albumList;
         if (artist != null) {
             albumList = recordShopService.getAllAlbumsByArtist(artist);
         } else if (year != null) {
             albumList = recordShopService.getAllAlbumsByReleaseYear(year);
+        } else if (genreString != null) {
+            Genre genre;
+            try {
+                genre = Genre.valueOf(genreString.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw new BadRequestException("Provided argument '" + genreString + "' is not a valid genre!");
+            }
+
+            albumList = recordShopService.getAllAlbumsByGenre(genre);
         } else {
             albumList = recordShopService.getAllAlbums();
         }
