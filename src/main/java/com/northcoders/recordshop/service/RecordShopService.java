@@ -5,6 +5,7 @@ import com.northcoders.recordshop.model.Genre;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.Map;
 
 public interface RecordShopService {
     List<Album> getAllAlbums();
@@ -16,4 +17,5 @@ public interface RecordShopService {
     List<Album> getAllAlbumsByReleaseYear(Integer year);
     List<Album> getAllAlbumsByGenre (Genre genre);
     List<Album> getAllAlbumsByName (String albumName);
+    List<Album> getAllAlbumsByMultipleParams (Map<String, String> params);
 }

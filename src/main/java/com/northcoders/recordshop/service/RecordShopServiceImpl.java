@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -124,5 +125,10 @@ public class RecordShopServiceImpl implements RecordShopService{
         if (resultList.isEmpty()) throw new ResourceNotFoundException("No album found with name '" + albumName + "' in the database!");
 
         return resultList;
+    }
+
+    @Override
+    public List<Album> getAllAlbumsByMultipleParams(Map<String, String> params) {
+        return null;
     }
 }
