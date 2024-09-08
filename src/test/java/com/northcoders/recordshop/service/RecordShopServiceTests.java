@@ -277,4 +277,44 @@ class RecordShopServiceTests {
             assertThrows(BadRequestException.class, () -> recordShopService.getAllAlbumsByArtist(artist));
         }
     }
+
+
+    @Nested
+    @DisplayName("getAllAlbumsByReleaseYear tests")
+    class GetAllAlbumsByReleaseYearTest {
+        @Test
+        @DisplayName("getAllAlbumsByReleaseYear returns correct list of albums when given valid release year of album in db")
+        void testGetAllAlbumsByReleaseYearAndPresent() {
+            Integer year = 2024;
+            List<Album> albums = new ArrayList<>();
+            albums.add(new Album("The Test pt 1", "Test", 2024, Genre.POP));
+            albums.add(new Album("The Test pt 2", "Test", 2024, Genre.POP));
+            albums.add(new Album("The Test pt 3", "Test", 2024, Genre.POP));
+
+            when(mockRecordShopRepository.findByReleaseYear(year)).thenReturn(albums);
+
+            List<Album> result = recordShopService.getAllAlbumsByReleaseYear(year);
+
+            assertThat(result).isEqualTo(albums);
+        }
+
+        @Test
+        @DisplayName("getAllAlbumsByReleaseYear throws ResourceNotFoundException when given valid year not matching db entry")
+        void testGetAllAlbumsByReleaseYearAndNotPresent() {
+            Integer year = 2024;
+            List<Album> noAlbums = new ArrayList<>();
+
+            when(mockRecordShopRepository.findByReleaseYear(year)).thenReturn(noAlbums);
+
+            assertThrows(ResourceNotFoundException.class, () -> recordShopService.getAllAlbumsByReleaseYear(year));
+        }
+
+        @Test
+        @DisplayName("getAllAlbumsByReleaseYear throws BadRequestException when given invalid year")
+        void testGetAllAlbumsByReleaseYearAndNullInteger() {
+            Integer year = null;
+
+            assertThrows(BadRequestException.class, () -> recordShopService.getAllAlbumsByReleaseYear(year));
+        }
+    }
 }
