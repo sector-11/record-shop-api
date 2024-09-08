@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface RecordShopRepository extends CrudRepository<Album, Long> {
     List<Album> findByArtist (String artist);
+    List<Album> findByReleaseYear (Integer year);
 }
