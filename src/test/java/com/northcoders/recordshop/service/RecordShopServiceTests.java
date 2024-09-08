@@ -243,7 +243,7 @@ class RecordShopServiceTests {
     @DisplayName("getAllAlbumsByArtist tests")
     class GetAllAlbumsByArtistTest {
         @Test
-        @DisplayName("getAllAlbumsByArtist returns correct list of artists when given valid name of album in db")
+        @DisplayName("getAllAlbumsByArtist returns correct list of albums when given valid name of album in db")
         void testGetAllAlbumsByArtistAndPresent() {
             String artist = "Test";
             List<Album> albums = new ArrayList<>();
