@@ -36,7 +36,7 @@ class RecordShopServiceTests {
     @DisplayName("getAllAlbums tests")
     class GetAllAlbumsTests {
         @Test
-        @DisplayName("findAll with items in db returns the expected list of items")
+        @DisplayName("getAllAlbums with items in db returns the expected list of items")
         void TestGetAllAlbums() {
             //Test data
             List<Album> albumList = new ArrayList<>();
@@ -57,7 +57,7 @@ class RecordShopServiceTests {
         }
 
         @Test
-        @DisplayName("findAll empty db throws ResourceNotFoundException")
+        @DisplayName("getAllAlbums empty db throws ResourceNotFoundException")
         void TestGetAllAlbumsWhileThereAreNone() {
             List<Album> emptyAlbumList = new ArrayList<>();
 
@@ -72,7 +72,7 @@ class RecordShopServiceTests {
     @DisplayName("getAlbumById tests")
     class GetAlbumByIdTests {
         @Test
-        @DisplayName("findById with good id returns an album")
+        @DisplayName("getAlbumById with good id returns an album")
         void testGetAlbumByIdFound() {
             Album album = new Album(1L, "Testing", "Red Green Cycle", 2024, Genre.POP);
 
@@ -84,7 +84,7 @@ class RecordShopServiceTests {
         }
 
         @Test
-        @DisplayName("findById with id that doesn't match db entry throws ResourceNotFoundException")
+        @DisplayName("getAlbumById with id that doesn't match db entry throws ResourceNotFoundException")
         void testGetAlbumByIdNotFound() {
             when(mockRecordShopRepository.findById(1L)).thenReturn(Optional.empty());
 
