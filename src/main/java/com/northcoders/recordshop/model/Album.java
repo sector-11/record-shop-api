@@ -1,6 +1,7 @@
 package com.northcoders.recordshop.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 
 import java.util.Objects;
@@ -11,18 +12,23 @@ public class Album {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY, description = "ID of album, provided by the database")
     Long id;
 
     @Column(name = "album_name", nullable = false)
+    @Schema(description = "Name of the album")
     String albumName;
 
     @Column(name = "artist", nullable = false)
+    @Schema(description = "Name of the album's artist")
     String artist;
 
     @Column(name = "release_year", nullable = false)
+    @Schema(description = "Year the album was released")
     Integer releaseYear;
 
     @Column(name = "genre_id", nullable = false)
+    @Schema(description = "Genre of the album", allowableValues = {"Pop", "Rock", "Hip Hop", "RnB", "Country", "Jazz", "Metal", "Classical"})
     Genre genre;
 
     public Album() {
