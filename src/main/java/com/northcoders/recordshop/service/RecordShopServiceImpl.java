@@ -106,6 +106,12 @@ public class RecordShopServiceImpl implements RecordShopService{
 
     @Override
     public List<Album> getAllAlbumsByGenre(Genre genre) {
-        return null;
+        if (genre == null) throw new BadRequestException("A year must be provided when trying to find all albums released in a year!");
+
+        List<Album> resultList = recordShopRepository.findByGenre(genre);
+
+        if (resultList.isEmpty()) throw new ResourceNotFoundException("No albums found with genre '" + genre.toString() + "' in the database!");
+
+        return resultList;
     }
 }
