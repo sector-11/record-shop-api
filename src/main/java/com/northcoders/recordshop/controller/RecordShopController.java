@@ -22,7 +22,8 @@ public class RecordShopController {
     @GetMapping("/records")
     public ResponseEntity<List<Album>> getAllAlbums(@RequestParam(name = "artist", required = false) String artist,
                                                     @RequestParam(name = "releaseYear", required = false) Integer year,
-                                                    @RequestParam(name = "genre", required = false) String genreString) {
+                                                    @RequestParam(name = "genre", required = false) String genreString,
+                                                    @RequestParam(name = "albumName", required = false) String albumName) {
         List<Album> albumList;
         if (artist != null) {
             albumList = recordShopService.getAllAlbumsByArtist(artist);
@@ -37,6 +38,8 @@ public class RecordShopController {
             }
 
             albumList = recordShopService.getAllAlbumsByGenre(genre);
+        } else if (albumName != null) {
+            albumList = recordShopService.getAllAlbumsByName(albumName);
         } else {
             albumList = recordShopService.getAllAlbums();
         }
