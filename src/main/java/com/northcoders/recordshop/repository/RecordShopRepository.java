@@ -12,4 +12,5 @@ public interface RecordShopRepository extends CrudRepository<Album, Long> {
     List<Album> findByArtist (String artist);
     List<Album> findByReleaseYear (Integer year);
     List<Album> findByGenre (Genre genre);
+    List<Album> findByAlbumName (String albumName);
 }
