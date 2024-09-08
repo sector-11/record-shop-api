@@ -3,6 +3,7 @@ package com.northcoders.recordshop.service;
 import com.northcoders.recordshop.exception.BadRequestException;
 import com.northcoders.recordshop.exception.ResourceNotFoundException;
 import com.northcoders.recordshop.model.Album;
+import com.northcoders.recordshop.model.Genre;
 import com.northcoders.recordshop.repository.RecordShopRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -101,5 +102,10 @@ public class RecordShopServiceImpl implements RecordShopService{
         if (resultList.isEmpty()) throw new ResourceNotFoundException("No albums found in the database released in year '" + year + "'!");
 
         return resultList;
+    }
+
+    @Override
+    public List<Album> getAllAlbumsByGenre(Genre genre) {
+        return null;
     }
 }
