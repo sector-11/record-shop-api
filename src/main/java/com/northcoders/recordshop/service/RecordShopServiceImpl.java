@@ -94,6 +94,12 @@ public class RecordShopServiceImpl implements RecordShopService{
 
     @Override
     public List<Album> getAllAlbumsByReleaseYear(Integer year) {
-        return null;
+        if (year == null) throw new BadRequestException("A year must be provided when trying to find all albums released in a year!");
+
+        List<Album> resultList = recordShopRepository.findByReleaseYear(year);
+
+        if (resultList.isEmpty()) throw new ResourceNotFoundException("No albums found in the database released in year '" + year + "'!");
+
+        return resultList;
     }
 }
