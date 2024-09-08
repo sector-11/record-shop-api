@@ -83,6 +83,12 @@ public class RecordShopServiceImpl implements RecordShopService{
 
     @Override
     public List<Album> getAllAlbumsByArtist(String artist) {
-        return null;
+        if (artist == null || artist.isEmpty()) throw new BadRequestException("An artist must be provided when trying to find all albums by an artist!");
+
+        List<Album> resultList = recordShopRepository.findByArtist(artist);
+
+        if (resultList.isEmpty()) throw new ResourceNotFoundException("No albums found by artist '" + artist + "' in the database!");
+
+        return resultList;
     }
 }
