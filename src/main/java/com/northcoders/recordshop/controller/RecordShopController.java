@@ -1,7 +1,6 @@
 package com.northcoders.recordshop.controller;
 
 import com.northcoders.recordshop.exception.BadRequestException;
-import com.northcoders.recordshop.exception.ResourceNotFoundException;
 import com.northcoders.recordshop.model.Album;
 import com.northcoders.recordshop.model.Genre;
 import com.northcoders.recordshop.service.RecordShopService;
