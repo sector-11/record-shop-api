@@ -80,4 +80,9 @@ public class RecordShopServiceImpl implements RecordShopService{
             throw new ResourceNotFoundException("No album found at id '" + id + "' in database.");
         }
     }
+
+    @Override
+    public List<Album> getAllAlbumsByArtist(String artist) {
+        return null;
+    }
 }

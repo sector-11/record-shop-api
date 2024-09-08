@@ -11,4 +11,5 @@ public interface RecordShopService {
     Album insertNewAlbum(Album album);
     ResponseEntity<Album> putAlbum(Album album, Long id);
     boolean deleteAlbum (long id);
+    List<Album> getAllAlbumsByArtist(String artist);
 }
