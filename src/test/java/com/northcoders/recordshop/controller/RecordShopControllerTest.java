@@ -215,7 +215,7 @@ class RecordShopControllerTest {
     }
 
     @Test
-    @DisplayName("GET request to /records with releaseYear parameter returns list of released that year assuming valid year integer with results in db")
+    @DisplayName("GET request to /records with releaseYear parameter returns list of albums released that year assuming valid year integer with results in db")
     public void testGetAlbumsByReleaseYear() throws Exception {
         Integer year = 2024;
         List<Album> albums = new ArrayList<>();
