@@ -54,7 +54,7 @@ public class RecordShopServiceImpl implements RecordShopService{
             Album createdAlbum = recordShopRepository.save(album);
             return new ResponseEntity<>(createdAlbum, HttpStatus.CREATED);
         } else{
-            if (!recordShopRepository.existsById(id)) throw new BadRequestException("There is no album matching id '" + id + "' in the database.");
+            if (!recordShopRepository.existsById(id)) throw new ResourceNotFoundException("There is no album matching id '" + id + "' in the database.");
             if (album.allFieldsOtherThanIdAreNull()) throw new BadRequestException("You must provide at least one change to make with a PUT request to an id!");
 
             if (album.getId() != null){
