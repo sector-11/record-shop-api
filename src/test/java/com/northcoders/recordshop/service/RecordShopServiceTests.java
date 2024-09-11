@@ -139,14 +139,14 @@ class RecordShopServiceTests {
         }
 
         @Test
-        @DisplayName("putAlbum throws a BadRequestException when given a valid id for an item that is not the db")
+        @DisplayName("putAlbum throws a ResourceNotFoundException when given a valid id for an item that is not the db")
         void testPutAlbumValidIdValidBodyButDoesNotExistInDB() {
             long id = 1L;
             Album albumToGive = new Album("Inflammable Material", "Stiff Little Fingers", 1979, Genre.ROCK);
 
             when(mockRecordShopRepository.existsById(id)).thenReturn(false);
 
-            assertThrows(BadRequestException.class, () -> recordShopService.putAlbum(albumToGive, id));
+            assertThrows(ResourceNotFoundException.class, () -> recordShopService.putAlbum(albumToGive, id));
         }
 
         @Test
@@ -173,17 +173,6 @@ class RecordShopServiceTests {
             ResponseEntity<Album> result = recordShopService.putAlbum(albumToGive, id);
 
             assertThat(result).isEqualTo(expectedResult);
-        }
-
-        @Test
-        @DisplayName("putAlbum throws BadRequestException when given a valid body but the given id does not exist in the db")
-        void testPutAlbumInvalidIdValidBody() {
-            long id = 1L;
-            Album albumToGive = new Album("Inflammable Material", "Stiff Little Fingers", 1979, Genre.ROCK);
-
-            when(mockRecordShopRepository.existsById(id)).thenReturn(false);
-
-            assertThrows(BadRequestException.class, () -> recordShopService.putAlbum(albumToGive, id));
         }
 
         @Test
